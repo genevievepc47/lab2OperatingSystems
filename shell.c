@@ -1,3 +1,4 @@
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,13 +59,13 @@ int main()
 
 		if( strcmp(argv[0], "cd") ==0)
 		{
+			char currentPath[100];
 			printf("you picked cd\n");
 			if(argv[1] == NULL)
 			{
-				char currentPath[100];
                         	getcwd(currentPath, sizeof(currentPath));
                         	printf("current path: %s\n", currentPath);
-			}//if they dont enter a dir to go to
+			}//end if they dont enter a dir to go to
 			else//if they enter a dir
 			{
 
@@ -81,8 +82,6 @@ int main()
 				}
 
 
-
-				char currentPath[100];
 				getcwd(currentPath, sizeof(currentPath));
 				printf("current path: %s\n", currentPath);
 			}//end if they enter a dir
@@ -92,14 +91,41 @@ int main()
 		else if(strcmp(argv[0], "clr") ==0)
 		{
 			printf("you picked clr\n");
+			printf("\033[H\033[2J");
 		}
 		else if(strcmp(argv[0], "dir") ==0)
                 {
                         printf("you picked dir\n");
-                }
+
+			DIR *dir;
+			struct dirent *s;
+
+			char *directory = argv[1];
+			dir = opendir(directory);
+
+			//If dir equals NULL, that means there is an error
+			while((s = readdir(dir)) != NULL)
+			//While there is another item in the directory that has not been looked at yet
+			{
+				printf("%s\t", s->d_name);
+			}
+
+                }//end if they pick dir
 		else if(strcmp(argv[0], "environ") ==0)
                 {
                         printf("you picked environ\n");
+			printf("OSTYPE: %s\n", getenv("OSTYPE"));
+			printf("LANG: %s\n", getenv("LANG"));
+			printf("USER: %s\n", getenv("USER"));
+			printf("LOGNAME: %s\n", getenv("LOGNAME"));
+                        printf("HOME: %s\n", getenv("HOME"));
+			printf("PATH: %s\n", getenv("PATH"));
+                        printf("MAIL: %s\n", getenv("MAIL"));
+			printf("SHELL: %s\n", getenv("SHELL"));
+			printf("USER: %s\n", getenv("USER"));
+			printf("USER: %s\n", getenv("USER"));
+
+
                 }
 		else if(strcmp(argv[0], "echo") ==0)
                 {
@@ -113,6 +139,10 @@ int main()
                 {
                         printf("you picked pause\n");
                 }
+		else if(strcmp(argv[0], "exit") ==0)
+		{
+			//do nothing, already handled
+		}
 		else//if it is an external command
 		{
 			printf("this command is not built in\n");
