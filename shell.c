@@ -1,3 +1,4 @@
+#include<sys/wait.h>
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -130,14 +131,32 @@ int main()
 		else if(strcmp(argv[0], "echo") ==0)
                 {
                         printf("you picked echo\n");
+
+			//loop though argv until we hit null
+			int i =1;
+			while(argv[i] != NULL)
+			{
+				printf("%s ", argv[i]);
+				i+=1;
+			}//end while looping thorugh argv
+			printf("\n");
                 }
 		else if(strcmp(argv[0], "help") ==0)
                 {
                         printf("you picked help\n");
+			//how the heck do i use the more command
                 }
 		else if(strcmp(argv[0], "pause") ==0)
                 {
                         printf("you picked pause\n");
+
+			//char *p;
+			//read -p "Press Enter to continue";
+			char c = getchar();
+			if(c == '\n')//if they hit the enter key
+			{
+				fflush(stdin);
+			}
                 }
 		else if(strcmp(argv[0], "exit") ==0)
 		{
@@ -160,9 +179,12 @@ int main()
 			{
 				//wait lines
 				//just the two lines
+				int status =0;
+				wait(&status);
 			}
 			else if(answer < 0)//error
 			{
+				printf("error");
 			}
 		}
 
