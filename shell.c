@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include<sys/wait.h>
 #include <dirent.h>
 #include <stdio.h>
@@ -142,6 +143,8 @@ int handleArray(char **argv)
 {
 	int running =1;
 
+
+
 	printf("The command is: %s\n", argv[0]);
 
 
@@ -255,16 +258,55 @@ int handleArray(char **argv)
                 }
                 else//if it is an external command
                 {
-                        printf("this command is not built in\n");
+
+
+
+                        puts("this command is not built in");
+
+
+
+
+
 
                         int answer = fork();
 
                         if( answer ==0)//the child
 
 			{
+
+				int outPlace = -1;
+				//loop through argv to see if there is ">" or ">>"
+                        	int i =0;
+                        	while(argv[i] != NULL)
+                        	{
+                                	i+=1;
+                                	if(strcmp(argv[i-1], ">") ==0)//if there is output redireciton
+                                	{
+						outPlace = i-1;
+                                        	int outFile = open(argv[i], O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU|S_IRWXG|S_IRWXO); //get the file descriptor for the out file
+
+                                       	 	//replce stdout with outFIle
+                                        	close(1);
+                                        	dup2(outFile,1);
+                                        	close(outFile);
+                                	}//end if there is out redirection
+                        	}//end looping through argv
+
+				//remove everything after > from the argv
+				if(outPlace != -1)//if there is output redirection
+				{
+					//loop through the array after the > and change them to null
+					int j = outPlace;
+					while(argv[j] !=NULL)
+					{
+						argv[j] = NULL;
+						j++;
+					}//end looping through array of words
+				}
+
                                 if(execvp(argv[0], argv) < 0)
                                 {
-                                        printf("this is not a real command\n");
+                                        puts("this is not a real command\n");
                                         exit(0);
                                 }
                         }
@@ -277,7 +319,7 @@ int handleArray(char **argv)
                         }
                         else if(answer < 0)//error
                         {
-                                printf("error");
+                                puts("error");
                         }
                 }//end if it is an external command
 
