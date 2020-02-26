@@ -275,7 +275,7 @@ int handleArray(char **argv)
 			{
 
 				int outPlace = -1;
-				//loop through argv to see if there is ">" or ">>"
+				//loop through argv to see if there is ">"
                         	int i =0;
                         	while(argv[i] != NULL)
                         	{
@@ -290,9 +290,21 @@ int handleArray(char **argv)
                                         	dup2(outFile,1);
                                         	close(outFile);
                                 	}//end if there is out redirection
+					else if(strcmp(argv[i-1], ">>") ==0)//if there is append output redirection
+					{
+						outPlace = i-1;
+						int outFile = open(argv[i], O_WRONLY|O_CREAT|O_APPEND, S_IRWXU|S_IRWXG|S_IRWXO); //get the file descriptor for the out file
+
+                                                //replce stdout with outFIle
+                                                close(1);
+                                                dup2(outFile,1);
+                                                close(outFile);
+
+					}//end if there is append
                         	}//end looping through argv
 
-				//remove everything after > from the argv
+
+				//remove everything after >, or >> from the argv
 				if(outPlace != -1)//if there is output redirection
 				{
 					//loop through the array after the > and change them to null
