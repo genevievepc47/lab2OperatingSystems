@@ -1,1 +1,4 @@
-a test
+man
+non built1
+non2 built2
+exit
