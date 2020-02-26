@@ -1,4 +1,4 @@
-LS(1)                                                                             User Commands                                                                            LS(1)
+LS(1)                            User Commands                           LS(1)
 
 NAME
        ls - list directory contents
@@ -7,9 +7,12 @@ SYNOPSIS
        ls [OPTION]... [FILE]...
 
 DESCRIPTION
-       List information about the FILEs (the current directory by default).  Sort entries alphabetically if none of -cftuvSUX nor --sort is specified.
+       List  information  about  the FILEs (the current directory by default).
+       Sort entries alphabetically if none of -cftuvSUX nor --sort  is  speci‐
+       fied.
 
-       Mandatory arguments to long options are mandatory for short options too.
+       Mandatory  arguments  to  long  options are mandatory for short options
+       too.
 
        -a, --all
               do not ignore entries starting with .
@@ -24,18 +27,21 @@ DESCRIPTION
               print C-style escapes for nongraphic characters
 
        --block-size=SIZE
-              scale sizes by SIZE before printing them; e.g., '--block-size=M' prints sizes in units of 1,048,576 bytes; see SIZE format below
+              scale sizes by SIZE before printing them; e.g., '--block-size=M'
+              prints sizes in units of 1,048,576 bytes; see SIZE format below
 
        -B, --ignore-backups
               do not list implied entries ending with ~
 
-       -c     with  -lt: sort by, and show, ctime (time of last modification of file status information); with -l: show ctime and sort by name; otherwise: sort by ctime, newest
-              first
+       -c     with -lt: sort by, and show, ctime (time of last modification of
+              file status information); with -l: show ctime and sort by  name;
+              otherwise: sort by ctime, newest first
 
        -C     list entries by columns
 
        --color[=WHEN]
-              colorize the output; WHEN can be 'always' (default if omitted), 'auto', or 'never'; more info below
+              colorize  the output; WHEN can be 'always' (default if omitted),
+              'auto', or 'never'; more info below
 
        -d, --directory
               list directories themselves, not their contents
@@ -52,7 +58,8 @@ DESCRIPTION
               likewise, except do not append '*'
 
        --format=WORD
-              across -x, commas -m, horizontal -x, long -l, single-column -1, verbose -l, vertical -C
+              across -x, commas -m, horizontal -x, long -l, single-column  -1,
+              verbose -l, vertical -C
 
        --full-time
               like -l --time-style=full-iso
@@ -62,7 +69,8 @@ DESCRIPTION
        --group-directories-first
               group directories before files;
 
-              can be augmented with a --sort option, but any use of --sort=none (-U) disables grouping
+              can   be  augmented  with  a  --sort  option,  but  any  use  of
+              --sort=none (-U) disables grouping
 
        -G, --no-group
               in a long listing, don't print group names
@@ -81,10 +89,12 @@ DESCRIPTION
               that points to a directory
 
        --hide=PATTERN
-              do not list implied entries matching shell PATTERN (overridden by -a or -A)
+              do not list implied entries matching shell  PATTERN  (overridden
+              by -a or -A)
 
        --indicator-style=WORD
-              append indicator with style WORD to entry names: none (default), slash (-p), file-type (--file-type), classify (-F)
+              append indicator with style WORD to entry names: none (default),
+              slash (-p), file-type (--file-type), classify (-F)
 
        -i, --inode
               print the index number of each file
@@ -98,7 +108,9 @@ DESCRIPTION
        -l     use a long listing format
 
        -L, --dereference
-              when showing file information for a symbolic link, show information for the file the link references rather than for the link itself
+              when showing file information for a symbolic link, show informa‐
+              tion  for  the file the link references rather than for the link
+              itself
 
        -m     fill width with a comma separated list of entries
 
@@ -106,7 +118,8 @@ DESCRIPTION
               like -l, but list numeric user and group IDs
 
        -N, --literal
-              print raw entry names (don't treat e.g. control characters specially)
+              print raw entry names (don't treat e.g. control characters  spe‐
+              cially)
 
        -o     like -l, but do not list group information
 
@@ -117,13 +130,15 @@ DESCRIPTION
               print ? instead of nongraphic characters
 
        --show-control-chars
-              show nongraphic characters as-is (the default, unless program is 'ls' and output is a terminal)
+              show nongraphic characters as-is (the default, unless program is
+              'ls' and output is a terminal)
 
        -Q, --quote-name
               enclose entry names in double quotes
 
        --quoting-style=WORD
-              use quoting style WORD for entry names: literal, locale, shell, shell-always, shell-escape, shell-escape-always, c, escape
+              use quoting style WORD for entry names: literal, locale,  shell,
+              shell-always, shell-escape, shell-escape-always, c, escape
 
        -r, --reverse
               reverse order while sorting
@@ -137,22 +152,30 @@ DESCRIPTION
        -S     sort by file size, largest first
 
        --sort=WORD
-              sort by WORD instead of name: none (-U), size (-S), time (-t), version (-v), extension (-X)
+              sort  by  WORD instead of name: none (-U), size (-S), time (-t),
+              version (-v), extension (-X)
 
        --time=WORD
-              with -l, show time as WORD instead of default modification time: atime or access or use (-u); ctime or status (-c);  also  use  specified  time  as  sort  key  if
-              --sort=time (newest first)
+              with -l, show time as WORD instead of default modification time:
+              atime  or  access  or  use  (-u); ctime or status (-c); also use
+              specified time as sort key if --sort=time (newest first)
 
        --time-style=STYLE
-              with  -l,  show  times using style STYLE: full-iso, long-iso, iso, locale, or +FORMAT; FORMAT is interpreted like in 'date'; if FORMAT is FORMAT1<newline>FORMAT2,
-              then FORMAT1 applies to non-recent files and FORMAT2 to recent files; if STYLE is prefixed with 'posix-', STYLE takes effect only outside the POSIX locale
+              with -l, show times using style STYLE: full-iso, long-iso,  iso,
+              locale,  or  +FORMAT;  FORMAT  is interpreted like in 'date'; if
+              FORMAT  is  FORMAT1<newline>FORMAT2,  then  FORMAT1  applies  to
+              non-recent  files  and FORMAT2 to recent files; if STYLE is pre‐
+              fixed with 'posix-', STYLE takes effect only outside  the  POSIX
+              locale
 
        -t     sort by modification time, newest first
 
        -T, --tabsize=COLS
               assume tab stops at each COLS instead of 8
 
-       -u     with -lt: sort by, and show, access time; with -l: show access time and sort by name; otherwise: sort by access time, newest first
+       -u     with  -lt:  sort by, and show, access time; with -l: show access
+              time and sort by name; otherwise: sort by  access  time,  newest
+              first
 
        -U     do not sort; list entries in directory order
 
@@ -175,10 +198,14 @@ DESCRIPTION
        --version
               output version information and exit
 
-       The SIZE argument is an integer and optional unit (example: 10K is 10*1024).  Units are K,M,G,T,P,E,Z,Y (powers of 1024) or KB,MB,... (powers of 1000).
+       The  SIZE  argument  is  an  integer and optional unit (example: 10K is
+       10*1024).  Units are K,M,G,T,P,E,Z,Y  (powers  of  1024)  or  KB,MB,...
+       (powers of 1000).
 
-       Using color to distinguish file types is disabled both by default and with --color=never.  With --color=auto, ls emits color codes only when standard output is connected
-       to a terminal.  The LS_COLORS environment variable can change the settings.  Use the dircolors command to set it.
+       Using  color  to distinguish file types is disabled both by default and
+       with --color=never.  With --color=auto, ls emits color codes only  when
+       standard  output is connected to a terminal.  The LS_COLORS environment
+       variable can change the settings.  Use the dircolors command to set it.
 
    Exit status:
        0      if OK,
@@ -195,81 +222,14 @@ REPORTING BUGS
        Report ls translation bugs to <http://translationproject.org/team/>
 
 COPYRIGHT
-       Copyright © 2016 Free Software Foundation, Inc.  License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
-       This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law.
+       Copyright © 2016 Free Software Foundation, Inc.   License  GPLv3+:  GNU
+       GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+       This  is  free  software:  you  are free to change and redistribute it.
+       There is NO WARRANTY, to the extent permitted by law.
 
 SEE ALSO
        Full documentation at: <http://www.gnu.org/software/coreutils/ls>
        or available locally via: info '(coreutils) ls invocation'
 
-GNU coreutils 8.25                                                                February 2017                                                                            LS(1)
-EXIT(3)                                                                     Linux Programmer's Manual                                                                    EXIT(3)
-
-NAME
-       exit - cause normal process termination
-
-SYNOPSIS
-       #include <stdlib.h>
-
-       void exit(int status);
-
-DESCRIPTION
-       The exit() function causes normal process termination and the value of status & 0377 is returned to the parent (see wait(2)).
-
-       All  functions  registered  with  atexit(3)  and  on_exit(3)  are  called, in the reverse order of their registration.  (It is possible for one of these functions to use
-       atexit(3) or on_exit(3) to register an additional function to be executed during exit processing; the new registration is added to the front of  the  list  of  functions
-       that  remain  to be called.)  If one of these functions does not return (e.g., it calls _exit(2), or kills itself with a signal), then none of the remaining functions is
-       called, and further exit processing (in particular, flushing of stdio(3) streams) is abandoned.  If a function has been registered  multiple  times  using  atexit(3)  or
-       on_exit(3), then it is called as many times as it was registered.
-
-       All open stdio(3) streams are flushed and closed.  Files created by tmpfile(3) are removed.
-
-       The C standard specifies two constants, EXIT_SUCCESS and EXIT_FAILURE, that may be passed to exit() to indicate successful or unsuccessful termination, respectively.
-
-RETURN VALUE
-       The exit() function does not return.
-
-ATTRIBUTES
-       For an explanation of the terms used in this section, see attributes(7).
-
-       ┌──────────┬───────────────┬─────────────────────┐
-       │Interface │ Attribute     │ Value               │
-       ├──────────┼───────────────┼─────────────────────┤
-       │exit()    │ Thread safety │ MT-Unsafe race:exit │
-       └──────────┴───────────────┴─────────────────────┘
-       The exit() function uses a global variable that is not protected, so it is not thread-safe.
-
-CONFORMING TO
-       POSIX.1-2001, POSIX.1-2008, C89, C99, SVr4, 4.3BSD.
-
-NOTES
-       It  is undefined what happens if one of the functions registered using atexit(3) and on_exit(3) calls either exit() or longjmp(3).  Note that a call to execve(2) removes
-       registrations created using atexit(3) and on_exit(3).
-
-       The use of EXIT_SUCCESS and EXIT_FAILURE is slightly more portable (to non-UNIX environments) than the use of 0 and some nonzero value like 1 or -1.  In particular,  VMS
-       uses a different convention.
-
-       BSD has attempted to standardize exit codes; see the file <sysexits.h>.
-
-       After  exit(),  the exit status must be transmitted to the parent process.  There are three cases.  If the parent has set SA_NOCLDWAIT, or has set the SIGCHLD handler to
-       SIG_IGN, the status is discarded.  If the parent was waiting on the child, it is notified of the exit status.  In both cases the exiting process  dies  immediately.   If
-       the  parent has not indicated that it is not interested in the exit status, but is not waiting, the exiting process turns into a "zombie" process (which is nothing but a
-       container for the single byte representing the exit status) so that the parent can learn the exit status when it later calls one of the wait(2) functions.
-
-       If the implementation supports the SIGCHLD signal, this signal is sent to the parent.  If the parent has set SA_NOCLDWAIT, it is undefined whether a  SIGCHLD  signal  is
-       sent.
-
-       If  the  process  is  a session leader and its controlling terminal is the controlling terminal of the session, then each process in the foreground process group of this
-       controlling terminal is sent a SIGHUP signal, and the terminal is disassociated from this session, allowing it to be acquired by a new controlling process.
-
-       If the exit of the process causes a process group to become orphaned, and if any member of the newly orphaned process group is stopped, then a SIGHUP signal followed  by
-       a SIGCONT signal will be sent to each process in this process group.  See setpgid(2) for an explanation of orphaned process groups.
-
-SEE ALSO
-       _exit(2), setpgid(2), wait(2), atexit(3), on_exit(3), tmpfile(3)
-
-COLOPHON
-       This  page  is part of release 4.04 of the Linux man-pages project.  A description of the project, information about reporting bugs, and the latest version of this page,
-       can be found at http://www.kernel.org/doc/man-pages/.
-
-Linux                                                                              2015-08-08                                                                            EXIT(3)
+GNU coreutils 8.25               February 2017                           LS(1)
+.	..	.git	test.txt	shell.c	test	shell.c.save	shell.c.save.1	a.out	outTest.txt	outFile.txt	shell	

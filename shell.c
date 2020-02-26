@@ -11,7 +11,8 @@
 //making a shell
 
 int handleArray(char **ptr);
-
+int findOutPlace(char **argv);
+int checkRedirect(char **ptr);//send it the array of words, it checks if there is output redirection of > or >>, returns 1 >, 2 for >>
 int main(int argc2, char *argv2[])
 {
 
@@ -194,12 +195,59 @@ int handleArray(char **argv)
                         char *directory = argv[1];
                         dir = opendir(directory);
 
-                        //If dir equals NULL, that means there is an error
-                        while((s = readdir(dir)) != NULL)
-                        //While there is another item in the directory that has not been looked at yet
-                        {
-                                printf("%s\t", s->d_name);
-                        }
+			//if there is output redirection >, open a file
+			//write to that file
+
+			//if there is output redirection >>, open
+			//append to that file
+
+			//else if there is no redirection,
+			//print normally
+
+			int outPlace =-1;
+			outPlace = findOutPlace(argv);//see where > is
+			int redirectStatus= checkRedirect(argv);//check$
+                        if(redirectStatus == 1)//>
+                       	{
+				FILE *fptr =fopen(argv[outPlace+1],"w");
+				//printf("opened file %s\n",argv[outPlace+1]);
+
+				//write to the file
+
+				while((s = readdir(dir)) != NULL)
+                        	//While there is another item in the directory that has not been looked at yet
+                        	{
+                                	fprintf(fptr, "%s\t", s->d_name);
+                        	}
+
+				fclose(fptr);
+				//printf("there was output redirection > at place %d\n", outPlace);
+			}//end if >
+			else if(redirectStatus == 2)//>>
+			{
+
+				FILE *fptr =fopen(argv[outPlace+1],"a");
+                                //printf("opened file %s\n",argv[outPlace+1]);
+
+                                //write to the file
+
+                                while((s = readdir(dir)) != NULL)
+                                //While there is another item in the directory $
+                                {
+                                        fprintf(fptr, "%s\t", s->d_name);
+                                }
+
+                                fclose(fptr);
+			}//end if >>
+			else if( redirectStatus ==-1)//fi there is no redirection
+			{
+                        	//If dir equals NULL, that means there is an error
+                        	while((s = readdir(dir)) != NULL)
+                        	//While there is another item in the directory that has not been looked at yet
+                        	{
+                                	printf("%s\t", s->d_name);
+                        	}
+			}//end if there is no redirection
 
                 }//end if they pick dir
                 else if(strcmp(argv[0], "environ") ==0)
@@ -213,9 +261,12 @@ int handleArray(char **argv)
                         printf("PATH: %s\n", getenv("PATH"));
                         printf("MAIL: %s\n", getenv("MAIL"));
                         printf("SHELL: %s\n", getenv("SHELL"));
-                        printf("USER: %s\n", getenv("USER"));
-                        printf("USER: %s\n", getenv("USER"));
-
+                        printf("SSH_CLIENT: %s\n", getenv("SSH_CLIENT"));
+                        printf("SSH_CONNECTION: %s\n", getenv("SSH_CONNECTION"));
+			printf("SSH_TTY: %s\n", getenv("SSH_TTY"));
+			printf("TERM: %s\n", getenv("TERM"));
+			printf("HOSTTYPE: %s\n", getenv("HOSTTYPE"));
+                        printf("WWW_HOME: %s\n", getenv("WWW_HOME"));
 
                 }
                 else if(strcmp(argv[0], "echo") ==0)
@@ -275,36 +326,36 @@ int handleArray(char **argv)
 			{
 
 				int outPlace = -1;
-				//loop through argv to see if there is ">"
-                        	int i =0;
-                        	while(argv[i] != NULL)
-                        	{
-                                	i+=1;
-                                	if(strcmp(argv[i-1], ">") ==0)//if there is output redireciton
-                                	{
-						outPlace = i-1;
-                                        	int outFile = open(argv[i], O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU|S_IRWXG|S_IRWXO); //get the file descriptor for the out file
+				outPlace = findOutPlace(argv);
 
-                                       	 	//replce stdout with outFIle
-                                        	close(1);
-                                        	dup2(outFile,1);
-                                        	close(outFile);
-                                	}//end if there is out redirection
-					else if(strcmp(argv[i-1], ">>") ==0)//if there is append output redirection
-					{
-						outPlace = i-1;
-						int outFile = open(argv[i], O_WRONLY|O_CREAT|O_APPEND, S_IRWXU|S_IRWXG|S_IRWXO); //get the file descriptor for the out file
+				int redirectStatus= checkRedirect(argv);//check if there is any redirection
+				if(redirectStatus == 1)//>
+				{
 
-                                                //replce stdout with outFIle
-                                                close(1);
-                                                dup2(outFile,1);
-                                                close(outFile);
+					int outFile = open(argv[outPlace+1], O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU|S_IRWXG|S_IRWXO); //get the file descriptor for the out file
 
-					}//end if there is append
-                        	}//end looping through argv
+                                        //replce stdout with outFIle
+                                        close(1);
+                                        dup2(outFile,1);
+                                        close(outFile);
+
+				}//end if >
+				else if(redirectStatus == 2)//>>
+				{
+
+					int outFile = open(argv[outPlace+1], O_WRONLY|O_CREAT|O_APPEND, S_IRWXU|S_IRWXG|S_IRWXO); //get the file descriptor for the out file
+
+                                        //replce stdout with outFIle
+                                        close(1);
+                                        dup2(outFile,1);
+                                        close(outFile);
+
+				}//end if >>
+
 
 
 				//remove everything after >, or >> from the argv
+
 				if(outPlace != -1)//if there is output redirection
 				{
 					//loop through the array after the > and change them to null
@@ -338,3 +389,58 @@ int handleArray(char **argv)
 
 		return running;
 }//end handle array funciton
+
+
+//send it the array of words, it checks if there is output redirection of > or >>, returns 1 >, 2 for >>
+int checkRedirect(char **argv)
+{
+
+
+                                //loop through argv to see if there is ">"
+                                int i =0;
+                                while(argv[i] != NULL)
+                                {
+                                        i+=1;
+                                        if(strcmp(argv[i-1], ">") ==0)//if there is output redireciton
+                                        {
+                                                return 1;
+                                        }//end if there is out redirection
+                                        else if(strcmp(argv[i-1], ">>") ==0)//if there is append output redirection
+                                        {
+                                                return 2;
+
+                                        }//end if there is append
+                                }//end looping through argv
+				return -1;
+
+
+
+}//end check redirect funciton
+
+//find the spot in the array that > or >> is located
+int findOutPlace(char **argv)
+{
+
+
+				int outPlace = -1;
+                                //loop through argv to see if there is ">"
+                                int i =0;
+                                while(argv[i] != NULL)
+                                {
+                                        i+=1;
+                                        if(strcmp(argv[i-1], ">") ==0)//if there is output redireciton
+                                        {
+                                                outPlace = i-1;
+                                                return outPlace;
+                                        }//end if there is out redirection
+                                        else if(strcmp(argv[i-1], ">>") ==0)//if there is append output redirection
+                                        {
+                                                outPlace = i-1;
+                                                return outPlace;
+
+                                        }//end if there is append
+                                }//end looping through argv
+	return outPlace;
+
+}//end find outplace function
+
