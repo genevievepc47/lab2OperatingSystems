@@ -10,6 +10,10 @@
 //lab 2
 //making a shell
 
+//HAVING A PROBLEM WITH OUTPUT REDIRECTION FOR HELP
+//WHENEVER U DO HELP > THEN HELP>> ONLY ONE HELP SHOWS UP IN THE FILE
+
+
 int handleArray(char **ptr);
 int findOutPlace(char **argv);
 int checkRedirect(char **ptr);//send it the array of words, it checks if there is output redirection of > or >>, returns 1 >, 2 for >>
@@ -219,6 +223,7 @@ int handleArray(char **argv)
                         	{
                                 	fprintf(fptr, "%s\t", s->d_name);
                         	}
+				fprintf(fptr, "\n");
 
 				fclose(fptr);
 				//printf("there was output redirection > at place %d\n", outPlace);
@@ -236,6 +241,7 @@ int handleArray(char **argv)
                                 {
                                         fprintf(fptr, "%s\t", s->d_name);
                                 }
+				fprintf(fptr, "\n");
 
                                 fclose(fptr);
 			}//end if >>
@@ -247,6 +253,7 @@ int handleArray(char **argv)
                         	{
                                 	printf("%s\t", s->d_name);
                         	}
+				printf("\n");
 			}//end if there is no redirection
 
                 }//end if they pick dir
@@ -409,8 +416,81 @@ int handleArray(char **argv)
                 }//end if echo command
                 else if(strcmp(argv[0], "help") ==0)
                 {
-                        printf("you picked help\n");
-                        //how the heck do i use the more command
+
+			int outPlace =-1;
+                        outPlace = findOutPlace(argv);//see where > is
+                        int redirectStatus= checkRedirect(argv);//check$
+                        if(redirectStatus == 1)//>
+                        {
+                                FILE *fptr =fopen(argv[outPlace+1],"w");
+                                //printf("opened file %s\n",argv[outPlace+1]);
+
+				printf("i am writing over\n");
+                                //write to the file
+                        	fprintf(fptr, "WELCOME TO HELP\n");
+                        	fprintf(fptr, "BUILT IN COMMANDS:\n");
+                        	fprintf(fptr, "cd: change the directory\n");
+                        	fprintf(fptr, "clr: clear the screen\n");
+                        	fprintf(fptr, "dir: print the contents of the current directory or user specified directory\n");
+                        	fprintf(fptr, "environ: list the environment variables\n");
+                        	fprintf(fptr, "echo: print the user's input\n");
+                        	fprintf(fptr, "help: display the user manual\n");
+                        	fprintf(fptr, "pause: pause the shell until the user presses enter\n");
+                        	fprintf(fptr, "exit: exit the program\n");
+                        	fprintf(fptr, "you can also type in any normal shell command\n");
+                        	fprintf(fptr, "print your output to a file instead with >\n");
+                        	fprintf(fptr, "append your output to a file with >>\n");
+                        	fprintf(fptr, "give your input in a file with <\n");
+                        	fprintf(fptr, "execute a command in the background with &\n");
+                        	fprintf(fptr, "make the output of one command the input of another with |\n");
+			}//end if >
+			else if(redirectStatus ==2)//>>
+			{
+				FILE *fptr =fopen(argv[outPlace+1],"a");
+                                //printf("opened file %s\n",argv[outPlace+1]);
+
+
+				printf("I am appending\n");
+                                //write to the file
+                                fprintf(fptr, "WELCOME TO HELP\n");
+                                fprintf(fptr, "BUILT IN COMMANDS:\n");
+                                fprintf(fptr, "cd: change the directory\n");
+                                fprintf(fptr, "clr: clear the screen\n");
+                                fprintf(fptr, "dir: print the contents of the current directory or user specified directory\n");
+                                fprintf(fptr, "environ: list the environment variables\n");
+                                fprintf(fptr, "echo: print the user's input\n");
+                                fprintf(fptr, "help: display the user manual\n");
+                                fprintf(fptr, "pause: pause the shell until the user presses enter\n");
+                                fprintf(fptr, "exit: exit the program\n");
+                                fprintf(fptr, "you can also type in any normal shell command\n");
+                                fprintf(fptr, "print your output to a file instead with >\n");
+                                fprintf(fptr, "append your output to a file with >>\n");
+                                fprintf(fptr, "give your input in a file with <\n");
+                                fprintf(fptr, "execute a command in the background with &\n");
+                                fprintf(fptr, "make the output of one command the input of another with |\n");
+
+			}//end if >>
+			else if(redirectStatus ==-1)//no redirection
+			{
+
+                        	printf("you picked help\n");
+                        	printf("WELCOME TO HELP\n");
+				printf("BUILT IN COMMANDS:\n");
+				printf("cd: change the directory\n");
+				printf("clr: clear the screen\n");
+				printf("dir: print the contents of the current directory or user specified directory\n");
+				printf("environ: list the environment variables\n");
+				printf("echo: print the user's input\n");
+				printf("help: display the user manual\n");
+				printf("pause: pause the shell until the user presses enter\n");
+				printf("exit: exit the program\n");
+				printf("you can also type in any normal shell command\n");
+				printf("print your output to a file instead with >\n");
+				printf("append your output to a file with >>\n");
+				printf("give your input in a file with <\n");
+				printf("execute a command in the background with &\n");
+				printf("make the output of one command the input of another with |\n");
+			}//end if no redirection
 
 			//exec more, pass it the help file
                 }
