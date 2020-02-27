@@ -425,7 +425,7 @@ int handleArray(char **argv)
                                 FILE *fptr =fopen(argv[outPlace+1],"w");
                                 //printf("opened file %s\n",argv[outPlace+1]);
 
-				printf("i am writing over\n");
+				//printf("i am writing over\n");
                                 //write to the file
                         	fprintf(fptr, "WELCOME TO HELP\n");
                         	fprintf(fptr, "BUILT IN COMMANDS:\n");
@@ -443,6 +443,7 @@ int handleArray(char **argv)
                         	fprintf(fptr, "give your input in a file with <\n");
                         	fprintf(fptr, "execute a command in the background with &\n");
                         	fprintf(fptr, "make the output of one command the input of another with |\n");
+				fclose(fptr);
 			}//end if >
 			else if(redirectStatus ==2)//>>
 			{
@@ -450,7 +451,7 @@ int handleArray(char **argv)
                                 //printf("opened file %s\n",argv[outPlace+1]);
 
 
-				printf("I am appending\n");
+				//printf("I am appending\n");
                                 //write to the file
                                 fprintf(fptr, "WELCOME TO HELP\n");
                                 fprintf(fptr, "BUILT IN COMMANDS:\n");
@@ -468,7 +469,7 @@ int handleArray(char **argv)
                                 fprintf(fptr, "give your input in a file with <\n");
                                 fprintf(fptr, "execute a command in the background with &\n");
                                 fprintf(fptr, "make the output of one command the input of another with |\n");
-
+				fclose(fptr);
 			}//end if >>
 			else if(redirectStatus ==-1)//no redirection
 			{

@@ -1,1 +1,32 @@
-.	..	.git	test.txt	shell.c	test	shell.c.save	shell.c.save.1	a.out	outTest.txt	outFile.txt	shell	.	..	.git	test.txt	shell.c	test	shell.c.save	shell.c.save.1	a.out	outTest.txt	outFile.txt	shell	
+WELCOME TO HELP
+BUILT IN COMMANDS:
+cd: change the directory
+clr: clear the screen
+dir: print the contents of the current directory or user specified directory
+environ: list the environment variables
+echo: print the user's input
+help: display the user manual
+pause: pause the shell until the user presses enter
+exit: exit the program
+you can also type in any normal shell command
+print your output to a file instead with >
+append your output to a file with >>
+give your input in a file with <
+execute a command in the background with &
+make the output of one command the input of another with |
+WELCOME TO HELP
+BUILT IN COMMANDS:
+cd: change the directory
+clr: clear the screen
+dir: print the contents of the current directory or user specified directory
+environ: list the environment variables
+echo: print the user's input
+help: display the user manual
+pause: pause the shell until the user presses enter
+exit: exit the program
+you can also type in any normal shell command
+print your output to a file instead with >
+append your output to a file with >>
+give your input in a file with <
+execute a command in the background with &
+make the output of one command the input of another with |
