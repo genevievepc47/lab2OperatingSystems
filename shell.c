@@ -253,21 +253,76 @@ int handleArray(char **argv)
                 else if(strcmp(argv[0], "environ") ==0)
                 {
                         printf("you picked environ\n");
-                        printf("OSTYPE: %s\n", getenv("OSTYPE"));
-                        printf("LANG: %s\n", getenv("LANG"));
-                        printf("USER: %s\n", getenv("USER"));
-                        printf("LOGNAME: %s\n", getenv("LOGNAME"));
-                        printf("HOME: %s\n", getenv("HOME"));
-                        printf("PATH: %s\n", getenv("PATH"));
-                        printf("MAIL: %s\n", getenv("MAIL"));
-                        printf("SHELL: %s\n", getenv("SHELL"));
-                        printf("SSH_CLIENT: %s\n", getenv("SSH_CLIENT"));
-                        printf("SSH_CONNECTION: %s\n", getenv("SSH_CONNECTION"));
-			printf("SSH_TTY: %s\n", getenv("SSH_TTY"));
-			printf("TERM: %s\n", getenv("TERM"));
-			printf("HOSTTYPE: %s\n", getenv("HOSTTYPE"));
-                        printf("WWW_HOME: %s\n", getenv("WWW_HOME"));
 
+			int outPlace =-1;
+                        outPlace = findOutPlace(argv);//see where > is
+                        int redirectStatus= checkRedirect(argv);//check$
+                        if(redirectStatus == 1)//>
+                        {
+                                FILE *fptr =fopen(argv[outPlace+1],"w");
+                                //printf("opened file %s\n",argv[outPlace+1]);
+
+                                //write to the file
+
+				fprintf(fptr, "OSTYPE: %s\n", getenv("OSTYPE"));
+                        	fprintf(fptr, "LANG: %s\n", getenv("LANG"));
+                        	fprintf(fptr, "USER: %s\n", getenv("USER"));
+                        	fprintf(fptr, "LOGNAME: %s\n", getenv("LOGNAME"));
+                        	fprintf(fptr, "HOME: %s\n", getenv("HOME"));
+                        	fprintf(fptr, "PATH: %s\n", getenv("PATH"));
+                        	fprintf(fptr, "MAIL: %s\n", getenv("MAIL"));
+                        	fprintf(fptr, "SHELL: %s\n", getenv("SHELL"));
+                        	fprintf(fptr, "SSH_CLIENT: %s\n", getenv("SSH_CLIENT"));
+                        	fprintf(fptr, "SSH_CONNECTION: %s\n", getenv("SSH_CONNECTION"));
+                        	fprintf(fptr, "SSH_TTY: %s\n", getenv("SSH_TTY"));
+                        	fprintf(fptr, "TERM: %s\n", getenv("TERM"));
+                        	fprintf(fptr, "HOSTTYPE: %s\n", getenv("HOSTTYPE"));
+                        	fprintf(fptr, "WWW_HOME: %s\n", getenv("WWW_HOME"));
+				fclose(fptr);
+			}//end if >
+			else if(redirectStatus == 2)//>>
+                        {
+
+                                FILE *fptr =fopen(argv[outPlace+1],"a");
+                                //printf("opened file %s\n",argv[outPlace+1]);
+
+                                //write to the file
+
+				fprintf(fptr, "OSTYPE: %s\n", getenv("OSTYPE"));
+                                fprintf(fptr, "LANG: %s\n", getenv("LANG"));
+                                fprintf(fptr, "USER: %s\n", getenv("USER"));
+                                fprintf(fptr, "LOGNAME: %s\n", getenv("LOGNAME"));
+                                fprintf(fptr, "HOME: %s\n", getenv("HOME"));
+                                fprintf(fptr, "PATH: %s\n", getenv("PATH"));
+                                fprintf(fptr, "MAIL: %s\n", getenv("MAIL"));
+                                fprintf(fptr, "SHELL: %s\n", getenv("SHELL"));
+                                fprintf(fptr, "SSH_CLIENT: %s\n", getenv("SSH_CLIENT"));
+                                fprintf(fptr, "SSH_CONNECTION: %s\n", getenv("SSH_CONNECTION"));
+                                fprintf(fptr, "SSH_TTY: %s\n", getenv("SSH_TTY"));
+                                fprintf(fptr, "TERM: %s\n", getenv("TERM"));
+                                fprintf(fptr, "HOSTTYPE: %s\n", getenv("HOSTTYPE"));
+                                fprintf(fptr, "WWW_HOME: %s\n", getenv("WWW_HOME"));
+                                fclose(fptr);
+                        }//end if >>
+			else if( redirectStatus ==-1)//fi there is no redirection
+                        {
+
+                        	printf("OSTYPE: %s\n", getenv("OSTYPE"));
+                        	printf("LANG: %s\n", getenv("LANG"));
+                        	printf("USER: %s\n", getenv("USER"));
+                        	printf("LOGNAME: %s\n", getenv("LOGNAME"));
+                        	printf("HOME: %s\n", getenv("HOME"));
+                        	printf("PATH: %s\n", getenv("PATH"));
+                        	printf("MAIL: %s\n", getenv("MAIL"));
+                        	printf("SHELL: %s\n", getenv("SHELL"));
+                        	printf("SSH_CLIENT: %s\n", getenv("SSH_CLIENT"));
+                        	printf("SSH_CONNECTION: %s\n", getenv("SSH_CONNECTION"));
+				printf("SSH_TTY: %s\n", getenv("SSH_TTY"));
+				printf("TERM: %s\n", getenv("TERM"));
+				printf("HOSTTYPE: %s\n", getenv("HOSTTYPE"));
+                        	printf("WWW_HOME: %s\n", getenv("WWW_HOME"));
+
+			}//end if there is no redirection
                 }
                 else if(strcmp(argv[0], "echo") ==0)
                 {
