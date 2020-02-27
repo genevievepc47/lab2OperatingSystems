@@ -10,10 +10,8 @@
 //lab 2
 //making a shell
 
-//HAVING A PROBLEM WITH OUTPUT REDIRECTION FOR HELP
-//WHENEVER U DO HELP > THEN HELP>> ONLY ONE HELP SHOWS UP IN THE FILE
-
-
+//BACKGROUND EXECUTION NOT WORKING
+//I DONT UNDERSTAND WHAT INPUT REDIRECTION IS
 int handleArray(char **ptr);
 int findOutPlace(char **argv);
 int checkRedirect(char **ptr);//send it the array of words, it checks if there is output redirection of > or >>, returns 1 >, 2 for >>
@@ -379,7 +377,7 @@ int handleArray(char **argv)
 
 
 				//remove everything after > or >>
-                                if(outPlace != -1)//if there is output redirect$
+                                if(outPlace == 1 || outPlace == 2)//if there is output redirect$
                                 {
                                         //loop through the array after the > an$
                                         int j = outPlace;
@@ -497,6 +495,7 @@ int handleArray(char **argv)
                 }
                 else if(strcmp(argv[0], "pause") ==0)
                 {
+			//THIS IS ALL WRONG, IDK HOW TO DO IT
                         printf("you picked pause\n");
 
                         //char *p;
@@ -520,7 +519,7 @@ int handleArray(char **argv)
 
                         puts("this command is not built in");
 
-
+			int backgroundStatus= checkRedirect(argv);
 
 
 
@@ -562,7 +561,7 @@ int handleArray(char **argv)
 
 				//remove everything after >, or >> from the argv
 
-				if(outPlace != -1)//if there is output redirection
+				if(outPlace == 1 || outPlace == 2)//if there is output redirection
 				{
 					//loop through the array after the > and change them to null
 					int j = outPlace;
@@ -583,8 +582,15 @@ int handleArray(char **argv)
                         {
                                 //wait lines
                                 //just the two lines
-                                int status =0;
-                                wait(&status);
+
+                                if(backgroundStatus !=3)//if there is no background execution
+				{
+
+					printf("no back\n");
+					int status =0;
+                                	wait(&status);
+				}//end if no background execution
+
                         }
                         else if(answer < 0)//error
                         {
@@ -616,6 +622,10 @@ int checkRedirect(char **argv)
                                                 return 2;
 
                                         }//end if there is append
+					else if(strcmp(argv[i-1], "&") ==0)//if background execution
+					{
+						return 3;
+					}
                                 }//end looping through argv
 				return -1;
 
@@ -645,6 +655,10 @@ int findOutPlace(char **argv)
                                                 return outPlace;
 
                                         }//end if there is append
+					else if(strcmp(argv[i-1], "&") ==0)
+					{
+						outPlace = i-1;
+					}//end if there is background
                                 }//end looping through argv
 	return outPlace;
 
