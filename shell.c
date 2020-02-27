@@ -11,7 +11,14 @@
 //making a shell
 
 //BACKGROUND EXECUTION NOT WORKING
+//HOW SHOULD BACKGROUND EXECUTION WORK, WHAT COMMANDS WOULD IT BE USEFUL FOR
+//WHAT COMMANDS SHOULD I TEST IT WITH? MAN?
 //I DONT UNDERSTAND WHAT INPUT REDIRECTION IS
+
+#define READ 0
+#define WRITE 1
+#define BUF_SIZE 64
+
 int handleArray(char **ptr);
 int findOutPlace(char **argv);
 int checkRedirect(char **ptr);//send it the array of words, it checks if there is output redirection of > or >>, returns 1 >, 2 for >>
@@ -556,6 +563,16 @@ int handleArray(char **argv)
                                         close(outFile);
 
 				}//end if >>
+				else if(redirectStatus == 5)//<
+				{
+					printf("going to file\n");
+					int inFile = open(argv[outPlace+1],O_RDONLY);//get file descriptor
+
+					close(0);
+					dup2(inFile,0);
+					close(inFile);
+
+				}//end if <
 
 
 
@@ -626,6 +643,14 @@ int checkRedirect(char **argv)
 					{
 						return 3;
 					}
+					else if(strcmp(argv[i-1], "|")==0)
+					{
+						return 4;
+					}
+					else if(strcmp(argv[i-1], "<")==0)
+					{
+						return 5;
+					}
                                 }//end looping through argv
 				return -1;
 
@@ -659,6 +684,14 @@ int findOutPlace(char **argv)
 					{
 						outPlace = i-1;
 					}//end if there is background
+					else if(strcmp(argv[i-1], "|") ==0)
+					{
+						outPlace = i-1;
+					}
+					else if(strcmp(argv[i-1], "<") ==0)
+					{
+						outPlace = i-1;
+					}
                                 }//end looping through argv
 	return outPlace;
 
