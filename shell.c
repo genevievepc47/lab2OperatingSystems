@@ -328,15 +328,85 @@ int handleArray(char **argv)
                 {
                         printf("you picked echo\n");
 
-                        //loop though argv until we hit null
-                        int i =1;
-                        while(argv[i] != NULL)
+			int outPlace =-1;
+                        outPlace = findOutPlace(argv);//see where > is
+                        int redirectStatus= checkRedirect(argv);//check$
+                        if(redirectStatus == 1)//>
                         {
-                                printf("%s ", argv[i]);
-                                i+=1;
-                        }//end while looping thorugh argv
-                        printf("\n");
-                }
+
+
+				//have to remove the last two elements from argv
+
+				FILE *fptr =fopen(argv[outPlace+1],"w");
+                                //printf("opened file %s\n",argv[outPlace+1]);
+
+
+				if(outPlace != -1)//if there is output redirect$
+                                {
+                                        //loop through the array after the > an$
+                                        int j = outPlace;
+                                        while(argv[j] !=NULL)
+                                        {
+                                                argv[j] = NULL;
+                                                j++;
+                                        }//end looping through array of words
+                                }//end taking out after > or >>
+
+                                //write to the file
+				int i =1;
+                        	while(argv[i] != NULL)
+                        	{
+                                	fprintf(fptr, "%s ", argv[i]);
+                                	i+=1;
+                        	}//end while looping thorugh argv
+                        	fprintf(fptr,"\n");
+
+				fclose(fptr);
+			}//end if >
+			else if(redirectStatus ==2)//>>
+			{
+
+
+				 FILE *fptr =fopen(argv[outPlace+1],"a");
+                                //printf("opened file %s\n",argv[outPlace+1]);
+
+
+				//remove everything after > or >>
+                                if(outPlace != -1)//if there is output redirect$
+                                {
+                                        //loop through the array after the > an$
+                                        int j = outPlace;
+                                        while(argv[j] !=NULL)
+                                        {
+                                                argv[j] = NULL;
+                                                j++;
+                                        }//end looping through array of words
+                                }//end removing words after > or >>
+
+                                //write to the file
+
+				int i =1;
+                                while(argv[i] != NULL)
+                                {
+                                        fprintf(fptr, "%s ", argv[i]);
+                                        i+=1;
+                                }//end while looping thorugh argv
+                                fprintf(fptr,"\n");
+				fclose(fptr);
+			}//end if >>
+			else if(redirectStatus == -1)//if no redirect
+			{
+
+                        	//loop though argv until we hit null
+                        	int i =1;
+                        	while(argv[i] != NULL)
+                        	{
+                                	printf("%s ", argv[i]);
+                                	i+=1;
+                        	}//end while looping thorugh argv
+                        	printf("\n");
+			}//end if no redirect
+                }//end if echo command
                 else if(strcmp(argv[0], "help") ==0)
                 {
                         printf("you picked help\n");
