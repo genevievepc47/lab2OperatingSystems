@@ -1,3 +1,4 @@
+
 #include <fcntl.h>
 #include<sys/wait.h>
 #include <dirent.h>
@@ -13,13 +14,12 @@
 //BACKGROUND EXECUTION NOT WORKING
 //HOW SHOULD BACKGROUND EXECUTION WORK, WHAT COMMANDS WOULD IT BE USEFUL FOR
 //WHAT COMMANDS SHOULD I TEST IT WITH? MAN?
-//I DONT UNDERSTAND WHAT INPUT REDIRECTION IS
 
 #define READ 0
 #define WRITE 1
 #define BUF_SIZE 64
 
-int handleArray(char **ptr);
+int handleArray(char **ptr, int argc);
 int findOutPlace(char **argv);
 int checkRedirect(char **ptr);//send it the array of words, it checks if there is output redirection of > or >>, returns 1 >, 2 for >>
 int main(int argc2, char *argv2[])
@@ -34,6 +34,7 @@ int main(int argc2, char *argv2[])
 	//main program loop
 	while(running ==1)
 	{
+		int argc =1;
 
 		if(argv2[1] != NULL)//if they gave a batch file
 		{
@@ -67,7 +68,7 @@ int main(int argc2, char *argv2[])
     				//printf("chars=%06zd, contents: %s", line_size, line_buf);
 
 				char* argv[100];
-                		int argc =1;
+                		//int argc =1;
                 		int i =0;
 
                 		//seperate the input by spaces
@@ -89,7 +90,7 @@ int main(int argc2, char *argv2[])
                 		argv[i++] = NULL;//Set the first location in the array after your C-Strings to NULL.
 
 
-				running = handleArray(argv);
+				running = handleArray(argv, argc);
 
 				/* Get the next line */
     				line_size = getline(&line_buf, &line_buf_size, fp);
@@ -119,7 +120,7 @@ int main(int argc2, char *argv2[])
 
 			//parse each string in the command into seperate strings
 			char* argv[100];
-			int argc =1;
+			//int argc =1;
 			int i =0;
 
 			//seperate the input by spaces
@@ -143,13 +144,13 @@ int main(int argc2, char *argv2[])
 
 
 			//START handle array funciton
-		 	running = handleArray(argv);
+		 	running = handleArray(argv, argc);
 		}//end if it is not a batch file
 
 	}//end main program while loop
 }//end main
 
-int handleArray(char **argv)
+int handleArray(char **argv, int argc)
 {
 	int running =1;
 
@@ -528,19 +529,116 @@ int handleArray(char **argv)
 
 			int backgroundStatus= checkRedirect(argv);
 
+			int fd[2];
+			if(backgroundStatus ==4)
+			{
+				if(pipe(fd) !=0)//if there is an error
+				{
+					printf("there was an error with the pipe");
+				}
+			}
+			//pid_t pid;
+			//char buf[BUF_SIZE];
+			//char *message = "trapped in computer";
+
+			char *argv3[100];
+			char *argv2[100];
+
+			//if there is piping split it into front and back arrays
+			 if(backgroundStatus ==4)
+			{
+				int outPlace =-1;
+                         	outPlace = findOutPlace(argv);
+                                int count =0;
+                                for(int i =outPlace +1; i<argc-1; i++)
+                                {
+                                                        argv2[count] = argv[i];
+							count+=1;
+                                                        printf("I put %s into the new back array at spot %d\n", argv[i], count);
+                                                }//end for second half of the array
+                                                printf("here \n");
+                                                 printf("second half of pipe: %s\n" ,argv2[0]);
 
 
+
+				//first half of array code
+				int outPlace2 = -1;
+                                                outPlace2 = findOutPlace(argv);
+                                                int count2 =0;
+                                                for(int i =0; i< outPlace2; i++)
+                                                {
+                                                        argv3[count2] = argv[i];
+                                                        count2 +=1;
+                                                        printf("I put %s into the new front array at spot %d\n", argv[i], count2-1);
+                                                }
+                                                //printf("made it to right before print\n");
+                                                //printf("argv2[0] = %s\n", argv2[0]);
+                                                //printf("argv2[1]= %s\n", argv2[1]);
+                                                printf("first half of pipe: %s %s\n", argv3[0], argv3[1]);
+
+			}//end if there is piping so split it into arrays of front and back
 
                         int answer = fork();
 
                         if( answer ==0)//the child
 
 			{
+	                        int redirectStatus= checkRedirect(argv);//check if there is any redirection
+				printf("the redirect status was: %d\n", redirectStatus);
+				if(redirectStatus ==4)//if piping
+				{
+					printf("I am in the pipe method\n");
+					int answer2 = fork();
+					if(answer2 ==0)//if the chile
+					{
+
+
+						//in child exec the command after the pipe
+						printf("in the new child\n");
+
+						if(close(fd[READ]) ==-1)
+						{
+							fprintf(stderr, "error closing the read side\n");
+							return EXIT_FAILURE;
+						}
+
+						dup2(fd[WRITE], WRITE);
+						close(fd[WRITE]);
+
+
+
+						execvp(argv3[0], argv3);
+					}//end if the new child
+					else if(answer2 >0)//if the new parent
+					{
+
+
+						printf("in the new parent\n");
+						//in the parent exep the command before the pipe
+						if(close(fd[WRITE]) ==-1)
+                                        	{
+                                                		fprintf(stderr, "error closing the write side\n");
+                                                		return EXIT_FAILURE;
+                                        	}//end if closing fails
+
+						dup2(fd[READ], READ);
+
+						close(fd[READ]);
+
+
+						execvp(argv2[0], argv2);
+
+					}//end if new parent
+					//read(fd[READ], buf, BUF_SIZE);
+					//printf("Im the child, I just read %s\n", buf);
+					//message = buf;
+
+
+
+				}//end if piping
 
 				int outPlace = -1;
-				outPlace = findOutPlace(argv);
-
-				int redirectStatus= checkRedirect(argv);//check if there is any redirection
+                                outPlace = findOutPlace(argv);
 				if(redirectStatus == 1)//>
 				{
 
@@ -600,7 +698,7 @@ int handleArray(char **argv)
                                 //wait lines
                                 //just the two lines
 
-                                if(backgroundStatus !=3)//if there is no background execution
+                                if(backgroundStatus !=3 || backgroundStatus != 4)//if there is no background execution or if there is no piping
 				{
 
 					printf("no back\n");
@@ -613,6 +711,12 @@ int handleArray(char **argv)
                         {
                                 puts("error");
                         }
+
+			if(backgroundStatus ==4)
+			{
+				close(fd[READ]);
+                                        close(fd[WRITE]);
+			}
                 }//end if it is an external command
 
 
@@ -645,6 +749,7 @@ int checkRedirect(char **argv)
 					}
 					else if(strcmp(argv[i-1], "|")==0)
 					{
+						printf("i found piping");
 						return 4;
 					}
 					else if(strcmp(argv[i-1], "<")==0)
