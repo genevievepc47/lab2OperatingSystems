@@ -14,6 +14,8 @@
 //BACKGROUND EXECUTION NOT WORKING
 //HOW SHOULD BACKGROUND EXECUTION WORK, WHAT COMMANDS WOULD IT BE USEFUL FOR
 //WHAT COMMANDS SHOULD I TEST IT WITH? MAN?
+//error checking, still need to work on
+//go back and test each thing you have implemented so far
 
 #define READ 0
 #define WRITE 1
@@ -530,12 +532,13 @@ int handleArray(char **argv, int argc)
 			int backgroundStatus= checkRedirect(argv);
 
 			int fd[2];
+			pipe(fd);
 			if(backgroundStatus ==4)
 			{
-				if(pipe(fd) !=0)//if there is an error
-				{
-					printf("there was an error with the pipe");
-				}
+				//if(pipe(fd) !=0)//if there is an error
+				//{
+					//printf("there was an error with the pipe");
+				//}
 			}
 			//pid_t pid;
 			//char buf[BUF_SIZE];
@@ -554,10 +557,11 @@ int handleArray(char **argv, int argc)
                                 {
                                                         argv2[count] = argv[i];
 							count+=1;
-                                                        printf("I put %s into the new back array at spot %d\n", argv[i], count);
+                                                       // printf("I put %s into the new back array at spot %d\n", argv[i], count);
                                                 }//end for second half of the array
-                                                printf("here \n");
-                                                 printf("second half of pipe: %s\n" ,argv2[0]);
+						argv2[count] = NULL;
+                                                //printf("here \n");
+                                                 //printf("second half of pipe: %s\n" ,argv2[0]);
 
 
 
@@ -569,12 +573,13 @@ int handleArray(char **argv, int argc)
                                                 {
                                                         argv3[count2] = argv[i];
                                                         count2 +=1;
-                                                        printf("I put %s into the new front array at spot %d\n", argv[i], count2-1);
+                                                        //printf("I put %s into the new front array at spot %d\n", argv[i], count2-1);
                                                 }
-                                                //printf("made it to right before print\n");
+                                                argv3[count2] =NULL;
+						//printf("made it to right before print\n");
                                                 //printf("argv2[0] = %s\n", argv2[0]);
                                                 //printf("argv2[1]= %s\n", argv2[1]);
-                                                printf("first half of pipe: %s %s\n", argv3[0], argv3[1]);
+                                                //printf("first half of pipe: %s %s\n", argv3[0], argv3[1]);
 
 			}//end if there is piping so split it into arrays of front and back
 
@@ -587,14 +592,14 @@ int handleArray(char **argv, int argc)
 				printf("the redirect status was: %d\n", redirectStatus);
 				if(redirectStatus ==4)//if piping
 				{
-					printf("I am in the pipe method\n");
+					//printf("I am in the pipe method\n");
 					int answer2 = fork();
 					if(answer2 ==0)//if the chile
 					{
 
 
-						//in child exec the command after the pipe
-						printf("in the new child\n");
+						//in child exec the command before the pipe
+						//printf("in the new child\n");
 
 						if(close(fd[READ]) ==-1)
 						{
@@ -613,8 +618,8 @@ int handleArray(char **argv, int argc)
 					{
 
 
-						printf("in the new parent\n");
-						//in the parent exep the command before the pipe
+						//printf("in the new parent\n");
+						//in the parent exep the command after the pipe
 						if(close(fd[WRITE]) ==-1)
                                         	{
                                                 		fprintf(stderr, "error closing the write side\n");
@@ -625,8 +630,11 @@ int handleArray(char **argv, int argc)
 
 						close(fd[READ]);
 
-
+						//printf("in the new parent\n");
+						//printf("argv2[0] = %s\n", argv2[0]);
+						//printf("argv2[1] = %s\n", argv2[1]);
 						execvp(argv2[0], argv2);
+						//printf("in the new parent after exec\n");
 
 					}//end if new parent
 					//read(fd[READ], buf, BUF_SIZE);
@@ -698,12 +706,14 @@ int handleArray(char **argv, int argc)
                                 //wait lines
                                 //just the two lines
 
-                                if(backgroundStatus !=3 || backgroundStatus != 4)//if there is no background execution or if there is no piping
+				//1, 2,3,5, -1
+                                if(backgroundStatus ==1 || backgroundStatus == 2 || backgroundStatus == 5 || backgroundStatus == -1)//if there is no background execution or if there is no piping
 				{
 
-					printf("no back\n");
-					int status =0;
-                                	wait(&status);
+					printf("no back or pipe\n");
+					printf("background status: %d\n", backgroundStatus);
+					//int status =0;
+                                	//wait(&status);
 				}//end if no background execution
 
                         }
@@ -712,11 +722,11 @@ int handleArray(char **argv, int argc)
                                 puts("error");
                         }
 
-			if(backgroundStatus ==4)
-			{
+			//if(backgroundStatus ==4)
+			//{
 				close(fd[READ]);
                                         close(fd[WRITE]);
-			}
+			//}
                 }//end if it is an external command
 
 
