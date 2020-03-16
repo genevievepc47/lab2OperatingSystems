@@ -1,0 +1,52 @@
+Welcome to the README page.
+
+Features:
+
+Batch File: 
+You have the option of running the shell with a batch file instead of individual commands.
+To do this type the name of your batch file after the shell execution call.
+Make sure your batch file exists and you type the name correctly.
+The shell will read each line of the batch file and execute commands as needed.
+
+Internal commands:
+There are some commands built into the functionality of the shell.
+These include: 
+cd: Change the directory.
+clr: Clear the screen.
+dir: Print the contents of the current directory or a user-specified directory.
+environ: List the environment variables.
+echo: Print the user’s input.
+help: Display the user manual.
+pause: Pause the shell until the user presses Enter.
+exit: Exit the program.
+
+External Commands:
+The shell will run any commands bash can run
+
+Standard I/O:
+For all commands you can use them as you would in a regular shell.
+Type in your input afte the command and the shell will send output to the screen
+
+Input Redirection:
+Instead of typing your input for a command you can send it in from a file.
+To do this format your command as inputFile > command.
+Output will be printed to the screen.
+You can use this for all external commands.
+
+Output Redirection:
+Instead of the output of a command going to the screen you can print them to a file
+To do this format your command as command > outputFile.
+If the file does not exist the shell will create it.
+If the file already exists and has text in it, the text will be overwritten.
+You can chose to append to a file instead with command >> outputFile.
+You can use this for all external commands.
+You can only use this for the internal comamnds dir, environ, echo, and help
+
+Background Execution:
+To execute a command in the background format your command as command &.
+This will run the command in the background while the shell continues to run.
+
+Piping:
+You can use the output of one command as the input of another command.  
+To do this format your command as command1 | command2.
+The output of the second command will print to the screen normally.

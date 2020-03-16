@@ -1,0 +1,94 @@
+Gen Cohen
+Shell lab Operating Systems
+Description Document
+
+
+
+Design:
+My program is inside of the main program loop. As long as the variable “running” is equal to 1, it keeps looping.
+
+The first thing the shell does is determine if there is a batch file or if the user is going to input manually. 
+In both cases, it loops through the line it is given and separates each word into an array of strings.
+
+That array is then sent to the “handleArray” function, where the array is handled.
+
+In this function, the code loops through the array. The first element in the array is the command. 
+
+There is a series of if statements to check if the command is built-in. If it is, the specific code is run.
+
+If it is not a built-in command then the code is forked. The child code is run and checks if there is piping. If there is piping then the code is forked again. If there is no piping the code checks if there is any redirection. If there is it reroutes input and output accordingly.
+
+In the parent, execvp is called on the command.
+
+There are two other functions I made that I utilize. One is called checkRedirect. This function takes in an array of strings. It loops through each element to check if it is <, >, >>, |, or &. It returns a number that represents a status. For example if it finds | then it returns 4.
+The other function is findOutPlace. This takes in an array of strings.  It loops through each element to check if it is <, >, >>, |, or &. If it finds one of these it returns the index in the array where it found it. If none were found, it returns -1.
+
+What the shell does:
+If you don’t provide a batch file then the shell starts with a prompt for input. The user types what command they want the shell to execute. The shell then executes the command with any parameters the user gives for it.
+
+Other Features:
+
+Batch File:
+You have the option of running the shell with a batch file instead of individual commands.
+To do this type the name of your batch file after the shell execution call.
+Make sure your batch file exists and you type the name correctly.
+The shell will read each line of the batch file and execute commands as needed.
+
+Internal commands:
+There are some commands built into the functionality of the shell.
+These include:
+cd: Change the directory.
+clr: Clear the screen.
+dir: Print the contents of the current directory or a user-specified directory.
+environ: List the environment variables.
+echo: Print the user’s input.
+help: Display the user manual.
+pause: Pause the shell until the user presses Enter.
+exit: Exit the program.
+
+External Commands:
+The shell will run any commands bash can run
+
+Standard I/O:
+For all commands, you can use them as you would in a regular shell.
+Type in your input after the command and the shell will send output to the screen
+
+Input Redirection:
+Instead of typing your input for a command you can send it in from a file.
+To do this format your command as inputFile > command.
+The output will be printed to the screen.
+You can use this for all external commands.
+
+Output Redirection:
+Instead of the output of a command going to the screen you can print them to a file
+To do this format your command as command > outputFile.
+If the file does not exist the shell will create it.
+If the file already exists and has text in it, the text will be overwritten.
+You can choose to append to a file instead with command >> outputFile.
+You can use this for all external commands.
+You can only use this for the internal commands dir, environ, echo, and help
+
+Background Execution:
+To execute a command in the background format your command as command &.
+This will run the command in the background while the shell continues to run.
+
+Piping:
+You can use the output of one command as the input of another command.
+To do this format your command as command1 | command2.
+
+
+
+Testing:
+To test this program I first built a basic shell.
+It would output the shell prompt and take in input until the user typed exit. 
+From there I could add more features and test them one at a time. 
+I started with the built-in commands. 
+For each one, I would write the code then test how it ran in the shell with various inputs such as the wrong number of parameters or files that don’t exist. 
+Implementing the external commands was a similar process. 
+To understand how forking worked I used various print statements around the program to see what order they would print in when the code was run. 
+When I added other features like input and output redirection, piping, and background execution I would implement the code then test it in the shell. 
+When there were errors I would print out different variables to understand what my code was reading from the commands. 
+On multiple occasions, my issue was that I had read in the user’s input wrong. 
+I was able to find these errors by printing out what my code had collected as the user input, and then being able to see that it was different than what I had entered.
+When I print out variables I can see that they are different than what I thought they were, and then correct where I defined them wrong.
+

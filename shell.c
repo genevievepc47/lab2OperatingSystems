@@ -11,12 +11,8 @@
 //lab 2
 //making a shell
 
-//BACKGROUND EXECUTION NOT WORKING
-//HOW SHOULD BACKGROUND EXECUTION WORK, WHAT COMMANDS WOULD IT BE USEFUL FOR
-//WHAT COMMANDS SHOULD I TEST IT WITH? MAN?
-//error checking, still need to work on
-//go back and test each thing you have implemented so far
 
+//remove & from arg list
 #define READ 0
 #define WRITE 1
 #define BUF_SIZE 64
@@ -62,7 +58,7 @@ int main(int argc2, char *argv2[])
   			while (line_size >= 0)
   			{
 
-				printf("\nI read in %s\n", line_buf);
+				printf("\nLine:  %s\n", line_buf);
     				/* Increment our line count */
     				line_count++;
 
@@ -117,7 +113,7 @@ int main(int argc2, char *argv2[])
     			size_t bufsize = 32;
 			buffer = (char *)malloc(bufsize * sizeof(char));
 			getline(&buffer, &bufsize, stdin);
-			printf("you typed %s\n",buffer);
+			//printf("you typed %s\n",buffer);
 
 
 			//parse each string in the command into seperate strings
@@ -156,10 +152,10 @@ int handleArray(char **argv, int argc)
 {
 	int running =1;
 
+	//int redirectStatus= checkRedirect(argv);
 
 
-	printf("The command is: %s\n", argv[0]);
-
+		//printf("The command is: %s\n", argv[0]);
 
                 if( strcmp(argv[0], "cd") ==0)
                 {
@@ -194,18 +190,27 @@ int handleArray(char **argv, int argc)
                 }//end if they enter CD
                 else if(strcmp(argv[0], "clr") ==0)
                 {
-                        printf("you picked clr\n");
+                        //printf("you picked clr\n");
                         printf("\033[H\033[2J");
                 }
                 else if(strcmp(argv[0], "dir") ==0)
 		{
-			printf("you picked dir\n");
+			//printf("you picked dir\n");
+			char currentPath[100];
+			if(argv[1] == NULL)
+                        {
+				//get current directory instead
+                                getcwd(currentPath, sizeof(currentPath));
+                                printf("current directory: %s\n", currentPath);
+                        }//end if they dont enter a dir to go to
+			else
+			{
 
                         DIR *dir;
                         struct dirent *s;
 
                         char *directory = argv[1];
-                        dir = opendir(directory);
+                        dir = opendir(directory);//error check, if dir = null, then it was an error
 
 			//if there is output redirection >, open a file
 			//write to that file
@@ -216,12 +221,15 @@ int handleArray(char **argv, int argc)
 			//else if there is no redirection,
 			//print normally
 
+			if(dir!= NULL)
+			{
+
 			int outPlace =-1;
 			outPlace = findOutPlace(argv);//see where > is
 			int redirectStatus= checkRedirect(argv);//check$
                         if(redirectStatus == 1)//>
                        	{
-				FILE *fptr =fopen(argv[outPlace+1],"w");
+				FILE *fptr =fopen(argv[outPlace+1],"w");//ERROR CHECK THIS
 				//printf("opened file %s\n",argv[outPlace+1]);
 
 				//write to the file
@@ -253,7 +261,7 @@ int handleArray(char **argv, int argc)
 
                                 fclose(fptr);
 			}//end if >>
-			else if( redirectStatus ==-1)//fi there is no redirection
+			else if( redirectStatus !=2 && redirectStatus != 1)//fi there is no redirection
 			{
                         	//If dir equals NULL, that means there is an error
                         	while((s = readdir(dir)) != NULL)
@@ -263,11 +271,16 @@ int handleArray(char **argv, int argc)
                         	}
 				printf("\n");
 			}//end if there is no redirection
-
+			}//end if the dir exists
+			else//if dir == null
+			{
+				printf("Directory does not exist\n");
+			}
+		}//end if they entered the right arguments for dir
                 }//end if they pick dir
                 else if(strcmp(argv[0], "environ") ==0)
                 {
-                        printf("you picked environ\n");
+                        //printf("you picked environ\n");
 
 			int outPlace =-1;
                         outPlace = findOutPlace(argv);//see where > is
@@ -319,7 +332,7 @@ int handleArray(char **argv, int argc)
                                 fprintf(fptr, "WWW_HOME: %s\n", getenv("WWW_HOME"));
                                 fclose(fptr);
                         }//end if >>
-			else if( redirectStatus ==-1)//fi there is no redirection
+			else if( redirectStatus !=2 && redirectStatus != 1)//fi there is no redirection
                         {
 
                         	printf("OSTYPE: %s\n", getenv("OSTYPE"));
@@ -341,12 +354,12 @@ int handleArray(char **argv, int argc)
                 }
                 else if(strcmp(argv[0], "echo") ==0)
                 {
-                        printf("you picked echo\n");
+                        //printf("you picked echo\n");
 
 			int outPlace =-1;
                         outPlace = findOutPlace(argv);//see where > is
                         int redirectStatus= checkRedirect(argv);//check$
-                        if(redirectStatus == 1)//>
+                       if(redirectStatus == 1)//>
                         {
 
 
@@ -356,7 +369,7 @@ int handleArray(char **argv, int argc)
                                 //printf("opened file %s\n",argv[outPlace+1]);
 
 
-				if(outPlace != -1)//if there is output redirect$
+				if(redirectStatus != 1 && redirectStatus !=2)//if there is output redirect$
                                 {
                                         //loop through the array after the > an$
                                         int j = outPlace;
@@ -409,7 +422,7 @@ int handleArray(char **argv, int argc)
                                 fprintf(fptr,"\n");
 				fclose(fptr);
 			}//end if >>
-			else if(redirectStatus == -1)//if no redirect
+			else if(redirectStatus !=2 && redirectStatus != 1)//if no redirect
 			{
 
                         	//loop though argv until we hit null
@@ -479,7 +492,7 @@ int handleArray(char **argv, int argc)
                                 fprintf(fptr, "make the output of one command the input of another with |\n");
 				fclose(fptr);
 			}//end if >>
-			else if(redirectStatus ==-1)//no redirection
+			else if(redirectStatus !=2 && redirectStatus != 1)//no redirection
 			{
 
                         	printf("you picked help\n");
@@ -505,21 +518,30 @@ int handleArray(char **argv, int argc)
                 }
                 else if(strcmp(argv[0], "pause") ==0)
                 {
-			//THIS IS ALL WRONG, IDK HOW TO DO IT
-                        printf("you picked pause\n");
 
+                        ////printf("you picked pause\n");
+
+			int pressed = 0;
+
+			while(pressed == 0)
+			{
                         //char *p;
                         //read -p "Press Enter to continue";
                         char c = getchar();
-                        if(c == '\n')//if they hit the enter key
+                        if(c != '\n')//if they hit the enter key
                         {
                                 fflush(stdin);
                         }
+			else
+			{
+				pressed =1;
+			}
+			}
                 }
                 else if(strcmp(argv[0], "exit") ==0)
                 {
                         running =0;
-                        printf("shell stopped\n");
+                        //printf("shell stopped\n");
 			exit(0);
                 }
                 else//if it is an external command
@@ -527,22 +549,17 @@ int handleArray(char **argv, int argc)
 
 
 
-                        puts("this command is not built in");
+                        //puts("this command is not built in");
 
 			int backgroundStatus= checkRedirect(argv);
 
 			int fd[2];
-			pipe(fd);
-			if(backgroundStatus ==4)
+			//batch file
+
+			if(pipe(fd) !=0)
 			{
-				//if(pipe(fd) !=0)//if there is an error
-				//{
-					//printf("there was an error with the pipe");
-				//}
+				printf("Error with pipe");
 			}
-			//pid_t pid;
-			//char buf[BUF_SIZE];
-			//char *message = "trapped in computer";
 
 			char *argv3[100];
 			char *argv2[100];
@@ -589,7 +606,7 @@ int handleArray(char **argv, int argc)
 
 			{
 	                        int redirectStatus= checkRedirect(argv);//check if there is any redirection
-				printf("the redirect status was: %d\n", redirectStatus);
+				//printf("the redirect status was: %d\n", redirectStatus);
 				if(redirectStatus ==4)//if piping
 				{
 					//printf("I am in the pipe method\n");
@@ -612,7 +629,10 @@ int handleArray(char **argv, int argc)
 
 
 
-						execvp(argv3[0], argv3);
+						if(execvp(argv3[0], argv3)< 0)
+						{
+							printf("Error with execvp\n");
+						}
 					}//end if the new child
 					else if(answer2 >0)//if the new parent
 					{
@@ -633,7 +653,10 @@ int handleArray(char **argv, int argc)
 						//printf("in the new parent\n");
 						//printf("argv2[0] = %s\n", argv2[0]);
 						//printf("argv2[1] = %s\n", argv2[1]);
-						execvp(argv2[0], argv2);
+						if(execvp(argv2[0], argv2) < 0)
+						{
+							printf("Error with exec\n");
+						}
 						//printf("in the new parent after exec\n");
 
 					}//end if new parent
@@ -671,20 +694,20 @@ int handleArray(char **argv, int argc)
 				}//end if >>
 				else if(redirectStatus == 5)//<
 				{
-					printf("going to file\n");
+					//printf("reading from file\n");
 					int inFile = open(argv[outPlace+1],O_RDONLY);//get file descriptor
 
 					close(0);
 					dup2(inFile,0);
 					close(inFile);
-
+					//argv[0] = argv[2];//the command needs to be at argv[0]
 				}//end if <
 
 
 
 				//remove everything after >, or >> from the argv
 
-				if(outPlace == 1 || outPlace == 2)//if there is output redirection
+				if(redirectStatus == 1 || redirectStatus == 2 || redirectStatus == 5 || redirectStatus == 3)//if there is output or input redirection or &
 				{
 					//loop through the array after the > and change them to null
 					int j = outPlace;
@@ -695,7 +718,8 @@ int handleArray(char **argv, int argc)
 					}//end looping through array of words
 				}
 
-                                if(execvp(argv[0], argv) < 0)
+
+                                if(execvp(argv[0], argv) < 0 )
                                 {
                                         puts("this is not a real command\n");
                                         exit(0);
@@ -710,10 +734,10 @@ int handleArray(char **argv, int argc)
                                 if(backgroundStatus ==1 || backgroundStatus == 2 || backgroundStatus == 5 || backgroundStatus == -1)//if there is no background execution or if there is no piping
 				{
 
-					printf("no back or pipe\n");
-					printf("background status: %d\n", backgroundStatus);
-					//int status =0;
-                                	//wait(&status);
+					//printf("no back or pipe\n");
+					//printf("background status: %d\n", backgroundStatus);
+					int status =0;
+                                	wait(&status);
 				}//end if no background execution
 
                         }
@@ -759,7 +783,7 @@ int checkRedirect(char **argv)
 					}
 					else if(strcmp(argv[i-1], "|")==0)
 					{
-						printf("i found piping");
+						//printf("i found piping");
 						return 4;
 					}
 					else if(strcmp(argv[i-1], "<")==0)
